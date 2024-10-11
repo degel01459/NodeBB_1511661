@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - f24
+  workflow_dispatch:
 
 defaults:
   run:
@@ -90,28 +91,61 @@ jobs:
           IFS=' ' read -r -a modifiedarray <<< "${{ steps.changed-files-specific.outputs.modified_files }}"
 
           PASS="false"
-          for addedfile in "${addedarray[@]}"
+
+          # Checks if a .js file inside the src/test/ folder was modified
+          for modifiedfile in "${modifiedarray[@]}"
           do
-              IFS='. ' read -r -a addfilesplit <<< $addedfile
-              ADDFILENAME="${addfilesplit[0]}"
-              ADDFILEEXT="${addfilesplit[1]}"
+            IFS='. ' read -r -a modfilesplit <<< $modifiedfile
+            MODFILENAME="${modfilesplit[0]}"
+            MODFILEEXT="${modfilesplit[1]}"
 
-              if [ "$ADDFILEEXT" == "ts" ]
-              then
-                  for modifiedfile in "${modifiedarray[@]}"
-                  do
-                      IFS='. ' read -r -a modfilesplit <<< $modifiedfile
-                      MODFILENAME="${modfilesplit[0]}"
-                      MODFILEEXT="${modfilesplit[1]}"
-
-                      if [ "$MODFILEEXT" == "js" ] && [ "$ADDFILENAME" == "$MODFILENAME" ]
-                      then
-                          echo "Found suitable file!"
-                          PASS="true"
-                      fi
-                  done
-              fi
+            if [ "$MODFILEEXT" == "js" ] && [[ "$modifiedfile" =~ ^src\/test\/ ]]
+            then
+              PASS="true"
+              break
+            fi
           done
+
+          # Checks if a .js file inside the src/test/ folder was added
+          if [ "$PASS" != "true" ]
+          then
+            for modifiedfile in "${modifiedarray[@]}"
+            do
+              IFS='. ' read -r -a modfilesplit <<< $modifiedfile
+              MODFILENAME="${modfilesplit[0]}"
+              MODFILEEXT="${modfilesplit[1]}"
+
+              if [ "$MODFILEEXT" == "js" ] && [[ "$modifiedfile" =~ ^src\/test\/ ]]
+              then
+                PASS="true"
+                break
+              fi
+            done
+
+          if [ "$PASS" != "true" ]
+          then
+            for addedfile in "${addedarray[@]}"
+            do
+                IFS='. ' read -r -a addfilesplit <<< $addedfile
+                ADDFILENAME="${addfilesplit[0]}"
+                ADDFILEEXT="${addfilesplit[1]}"
+
+                if [ "$ADDFILEEXT" == "ts" ]
+                then
+                    for modifiedfile in "${modifiedarray[@]}"
+                    do
+                        IFS='. ' read -r -a modfilesplit <<< $modifiedfile
+                        MODFILENAME="${modfilesplit[0]}"
+                        MODFILEEXT="${modfilesplit[1]}"
+
+                        if [ "$MODFILEEXT" == "js" ] && [ "$ADDFILENAME" == "$MODFILENAME" ]
+                        then
+                            echo "Found suitable file!"
+                            PASS="true"
+                        fi
+                    done
+                fi
+            done
 
           if [ "$PASS" != "true" ]
           then
