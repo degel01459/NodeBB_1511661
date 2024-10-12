@@ -96,7 +96,6 @@ jobs:
           for modifiedfile in "${modifiedarray[@]}"
           do
             IFS='. ' read -r -a modfilesplit <<< $modifiedfile
-            MODFILENAME="${modfilesplit[0]}"
             MODFILEEXT="${modfilesplit[1]}"
 
             if [ "$MODFILEEXT" == "js" ] && [[ "$modifiedfile" =~ ^src\/test\/ ]]
@@ -109,18 +108,18 @@ jobs:
           # Checks if a .js file inside the src/test/ folder was added
           if [ "$PASS" != "true" ]
           then
-            for modifiedfile in "${modifiedarray[@]}"
+            for addedfile in "${addedarray[@]}"
             do
-              IFS='. ' read -r -a modfilesplit <<< $modifiedfile
-              MODFILENAME="${modfilesplit[0]}"
-              MODFILEEXT="${modfilesplit[1]}"
+              IFS='. ' read -r -a addfilesplit <<< $addedfile
+              ADDFILEEXT="${addfilesplit[1]}"
 
-              if [ "$MODFILEEXT" == "js" ] && [[ "$modifiedfile" =~ ^src\/test\/ ]]
+              if [ "$ADDFILEEXT" == "js" ] && [[ "$addedfile" =~ ^src\/test\/ ]]
               then
                 PASS="true"
                 break
               fi
             done
+          fi
 
           if [ "$PASS" != "true" ]
           then
@@ -146,6 +145,7 @@ jobs:
                     done
                 fi
             done
+          fi
 
           if [ "$PASS" != "true" ]
           then
