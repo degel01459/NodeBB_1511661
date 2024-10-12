@@ -96,7 +96,9 @@ jobs:
           # Checks if any test files were modified or added
           for modifiedOrAddedFile in "${modifiedOrAddedArray[@]}"
           do
-            if [[ "$modifiedOrAddedFile" =~ ^test\/ ]]
+            IFS='/ ' read -r -a modifiedOrAddedSplit <<< $modifiedOrAddedFile
+            FIRSTDIRECTORY="${modifiedOrAddedSplit[0]}"
+            if [[ "$FIRSTDIRECTORY" == "test" ]]
             then
               echo "Found test file!"
               PASS="true"
