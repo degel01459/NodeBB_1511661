@@ -96,7 +96,7 @@ jobs:
           # Checks if any test files were modified or added
           for modifiedOrAddedFile in "${modifiedOrAddedArray[@]}"
           do
-            if [[ "$modifiedOrAddedFile" =~ ^src\/test\/ ]]
+            if [[ "$modifiedOrAddedFile" =~ ^test\/ ]]
             then
               echo "Found test file!"
               PASS="true"
