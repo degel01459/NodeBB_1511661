@@ -100,6 +100,7 @@ jobs:
 
             if [ "$MODFILEEXT" == "js" ] && [[ "$modifiedfile" =~ ^src\/test\/ ]]
             then
+              echo "Found test file!"
               PASS="true"
               break
             fi
@@ -115,6 +116,7 @@ jobs:
 
               if [ "$ADDFILEEXT" == "js" ] && [[ "$addedfile" =~ ^src\/test\/ ]]
               then
+                echo "Found test file!"
                 PASS="true"
                 break
               fi
@@ -149,7 +151,7 @@ jobs:
 
           if [ "$PASS" != "true" ]
           then
-              echo "No suitable files found that match the requirements of HW1. Please check that you have translated a JS file into TypeScript and regenerated the JavaScript file using % npx tsc"
+              echo "No suitable files found that match the requirements of HW1. Please check that you have translated a JS file into TypeScript and regenerated the JavaScript file using % npx tsc or added a test"
               echo "Files added (should see your xx.ts file): ${{ steps.changed-files-specific.outputs.added_files }}"
               echo "Files modified (should see your xx.js file): ${{ steps.changed-files-specific.outputs.modified_files }}"
               exit 1
