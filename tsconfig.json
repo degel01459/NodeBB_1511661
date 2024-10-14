@@ -1,14 +1,16 @@
 {
     "compilerOptions": {
+        "allowJs": false,
         "target": "es6",
         "module": "commonjs",
-        "outDir": "./dist", 
-        "rootDir": "./src",
-        "strict": true,
+        "moduleResolution": "node",
         "noImplicitAny": false,
         "esModuleInterop": true,
-        "skipLibCheck": true
     },
-    "include": ["src/**/*"],
+    "include": [
+        "public/src/**/*",
+        "src/**/*", 
+        "test/**/*"
+    ],
     "exclude": ["node_modules"]
 }
